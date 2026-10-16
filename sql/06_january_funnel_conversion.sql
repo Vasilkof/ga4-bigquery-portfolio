@@ -26,7 +26,7 @@ event_name,
 session_count,
 step_number,
 LAG(session_count) OVER (ORDER BY step_number) as previous_count_session,
-ROUND(session_count/LAG(session_count) OVER (ORDER BY step_number)*100, 1) as pct_of_previous_step
+ROUND(session_count/LAG(session_count) OVER (ORDER BY step_number), 3) as pct_of_previous_step
 from session_step_number
 order by step_number
 
