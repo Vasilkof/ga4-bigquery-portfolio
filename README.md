@@ -18,7 +18,7 @@ I used data from the public dataset `bigquery-public-data.ga4_obfuscated_sample_
 - `04_january_sessions_total.sql` — counts the total number of unique sessions in January 2021 (session = `user_pseudo_id` + `ga_session_id`).
 - `05_january_funnel_sessions.sql` — counts unique sessions for each funnel event.
 - `06_january_funnel_steps.sql` — assigns a step number to each funnel event with `CASE WHEN` to set the funnel order.
-- `07_january_funnel_conversion.sql` — calculates step-to-step conversion rate using `LAG` (current step / previous step × 100).
+- `07_january_funnel_conversion.sql` — calculates step-to-step conversion rate using `LAG` (current step / previous step).
   
 ## Key Findings
 ### Users: daily vs monthly
