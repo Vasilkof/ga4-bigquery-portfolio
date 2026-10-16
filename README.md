@@ -18,8 +18,13 @@ I used data from the public dataset `bigquery-public-data.ga4_obfuscated_sample_
 - `04_january_sessions_total.sql` — counts the total number of unique sessions in January 2021 (session = `user_pseudo_id` + `ga_session_id`).
 - `05_january_funnel_sessions.sql` — counts unique sessions for each funnel event.
 - `06_january_funnel_steps.sql` — assigns a step number to each funnel event with `CASE WHEN` to set the funnel order.
-- `07_january_funnel_conversion.sql` — calculates step-to-step conversion rate using `LAG` (current step / previous step).
-  
+- `07_january_funnel_conversion.sql` — calculates step-to-step conversion rate using `LAG` (current step / previous step, shown as % in Data Studio).
+
+## Dashboard
+
+[Purchase Funnel – January 2021](https://datastudio.google.com/reporting/3790c61f-8a3c-4a72-ae93-840c8d1c7ec3) — interactive dashboard in Data Studio.
+
+ 
 ## Key Findings
 ### Users: daily vs monthly
 The sum of unique users by day (106,565) exceeds the total number of unique users for the month (94,790) because returning visitors were counted multiple times in the daily statistics. On average, each active user visited the store on **1.12 different days** in January (106,565 / 94,790), indicating a high proportion of one-time site visits within the month. 
