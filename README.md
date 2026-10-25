@@ -24,7 +24,7 @@ I used data from the public dataset `bigquery-public-data.ga4_obfuscated_sample_
 - `10_cohort_size.sql` — number of users in each cohort.
 - `11_activity_by_user.sql` — months in which each user was active (one row per user + month).
 - `12_cohort_activity.sql` — joins activity with cohorts and calculates `month_number` (months since first visit).
-- `13_cohort_retention.sql` — number of active users per cohort and `month_number`.
+- `13_cohort_retention.sql` — number of active users per cohort and `month_number`. The query calculates cohort size and retention rate (as a proportion of the cohort size), in addition to user counts.
   
 ## Dashboard
 
