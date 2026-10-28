@@ -4,11 +4,11 @@ SQL analysis of GA4 e-commerce sample data in BigQuery.
 
 ## Objective
 
-I wanted to determine the number of unique users in January 2021. I compared the number of unique users for each day (aggregated monthly data) with the total number of unique users for the entire month. I also wanted to count all sessions and build a purchase funnel to find out where people drop off. Finally, I ran a cohort analysis to find out whether users come back in the months after their first visit.
+I wanted to determine the number of unique users in January 2021. I compared the number of unique users for each day (aggregated monthly data) with the total number of unique users for the entire month. I also wanted to count all sessions and build a purchase funnel to find out where people drop off. Then, I ran a cohort analysis to find out whether users come back in the months after their first visit. Finally, I compared customer acquisition channels by conversion rate and `revenue_per_user` to determine which was the most effective.
 
 ## Data
 
-I used data from the public dataset `bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*` (for the Google Merchandise Store) for January 2021. The cohort analysis uses the full available period, from November 1, 2020 to January 31, 2021. This data may differ from actual metrics, as it only simulates real-world statistics.
+I used data from the public dataset `bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*` (for the Google Merchandise Store) for January 2021. The cohort and channel analyses use the full available period, from November 1, 2020 to January 31, 2021. This data may differ from actual metrics, as it only simulates real-world statistics.
 
 ## Queries
 
@@ -25,6 +25,7 @@ I used data from the public dataset `bigquery-public-data.ga4_obfuscated_sample_
 - `11_activity_by_user.sql` — months in which each user was active (one row per user + month).
 - `12_cohort_activity.sql` — joins activity with cohorts and calculates `month_number` (months since first visit).
 - `13_cohort_retention.sql` — number of active users per cohort and `month_number`. The query calculates cohort size and retention rate (as a proportion of the cohort size), in addition to user counts.
+- `14_channel_performance.sql` — calculates users, purchases, revenue, conversion rate, average order value, and revenue per user broken down by each traffic source medium (`traffic_source.medium`).
   
 ## Dashboard
 
@@ -68,5 +69,33 @@ The biggest drop-off happens on the product page: 80.4% of sessions (18,568 out 
 - **`user_pseudo_id` usage:** Retention is tracked using client device identifiers rather than authenticated user accounts, which may artificially lower calculated retention if users clear cookies or switch devices.
 - **Cohort contamination (November):** The dataset begins on November 1, 2020. Without prior historical data, returning users from earlier months may be misclassified as new users in the November cohort, potentially inflating its retention rates.
 - **Short observation period:** The 3-month timeframe limits the ability to observe long-term retention trends or seasonal recovery patterns.
+
+### Channel performance
+
+**What was measured:** I compared traffic channels grouped by `traffic_source.medium` to evaluate their performance in driving user volume, conversion rates, and overall monetary value generated during November 1, 2020 – January 31, 2021.
+
+| Channel | Users | Purchases | Revenue ($) | Conversion rate | Avg order value ($) | Revenue per user ($) |
+|---|---|---|---|---|---|---|
+| referral | 55,495 | 1,258 | 83,521 | 2.3% | 66.39 | 1.51 |
+| (none) | 75,951 | 1,251 | 79,650 | 1.6% | 63.67 | 1.05 |
+| organic | 112,358 | 1,572 | 104,007 | 1.4% | 66.16 | 0.93 |
+| cpc | 15,528 | 166 | 9,056 | 1.1% | 54.55 | 0.58 |
+
+- `referral` — traffic from links on external websites.
+- `(none)` — direct traffic (typed URL, bookmarks, or unknown sources).
+- `organic` — unpaid traffic from search engine results.
+- `cpc` — paid ads (cost per click).
+
+**Key findings:**
+- **Paid traffic (`cpc`) is the weakest channel on every metric:** conversion rate 1.1%, average order value $54.55 and revenue per user $0.58 – about 2.6 times lower than `referral` ($1.51).
+- **`referral` is the strongest channel:** it has the highest conversion rate (2.3%), the highest average order value ($66.39) and the highest revenue per user ($1.51).
+- **`organic` brings the most revenue in total ($104,007), but through volume, not efficiency:** with the largest audience (112,358 users), it earns only $0.93 per user – less than `referral` and `(none)`.
+
+**Limitations:**
+- **No advertising cost data:** GA4 does not include ad spend, so return on ad spend (ROAS = revenue / ad spend) cannot be calculated. Whether `cpc` is profitable can only be judged by comparing its $9,056 in revenue with the costs in Google Ads.
+- **Users overlap between channels:** the sum of users across channels (328,574) is higher than the total number of users in the dataset (270,154), so channel shares do not add up to 100%. `traffic_source` should describe the first acquisition channel per user, so the overlap is likely a result of the dataset's obfuscation.
+- **Obfuscated values:** `<Other>` (51,038 users) and `(data deleted)` (18,204 users) are artifacts of the anonymised sample dataset, not real channels, and are excluded from the table and findings.
+  
+
 
 
