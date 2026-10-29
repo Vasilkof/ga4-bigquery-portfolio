@@ -1,10 +1,10 @@
 # ga4-bigquery-portfolio
 
-SQL analysis of GA4 e-commerce sample data in BigQuery.
+SQL analysis of GA4 e-commerce sample data in BigQuery, with dashboards in Data Studio and Power BI.
 
 ## Objective
 
-I wanted to determine the number of unique users in January 2021. I compared the number of unique users for each day (aggregated monthly data) with the total number of unique users for the entire month. I also wanted to count all sessions and build a purchase funnel to find out where people drop off. Then, I ran a cohort analysis to find out whether users come back in the months after their first visit. Finally, I compared customer acquisition channels by conversion rate and `revenue_per_user` to determine which was the most effective.
+I wanted to determine the number of unique users in January 2021. I compared the number of unique users for each day (aggregated monthly data) with the total number of unique users for the entire month. I also wanted to count all sessions and build a purchase funnel to find out where people drop off. Then, I ran a cohort analysis to find out whether users come back in the months after their first visit. Finally, I compared customer acquisition channels by conversion rate and revenue per user to determine which was the most effective.
 
 ## Data
 
@@ -30,6 +30,10 @@ I used data from the public dataset `bigquery-public-data.ga4_obfuscated_sample_
 ## Dashboard
 
 [Purchase Funnel – January 2021](https://datastudio.google.com/reporting/3790c61f-8a3c-4a72-ae93-840c8d1c7ec3) — interactive dashboard in Data Studio.
+
+**Channel Performance (Power BI)** — compares traffic channels by purchases, revenue, conversion rate, average order value and revenue per user. Ratio metrics are calculated with DAX measures, so totals are correct instead of being a sum of percentages. The `.pbix` file is in the [`powerbi`](powerbi/) folder.
+
+![Channel Performance dashboard in Power BI](powerbi/channel_performance_dashboard.png)
 
  
 ## Key Findings
@@ -73,6 +77,7 @@ The biggest drop-off happens on the product page: 80.4% of sessions (18,568 out 
 ### Channel performance
 
 **What was measured:** I compared traffic channels grouped by `traffic_source.medium` to evaluate their performance in driving user volume, conversion rates, and overall monetary value generated during November 1, 2020 – January 31, 2021.
+The same metrics are calculated as DAX measures in Power BI, so the Total reflects the correct value instead of summing the shares.
 
 | Channel | Users | Purchases | Revenue ($) | Conversion rate | Avg order value ($) | Revenue per user ($) |
 |---|---|---|---|---|---|---|
