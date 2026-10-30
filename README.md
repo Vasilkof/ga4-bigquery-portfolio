@@ -35,6 +35,8 @@ I used data from the public dataset `bigquery-public-data.ga4_obfuscated_sample_
 
 ![Channel Performance dashboard in Power BI](powerbi/channel_performance_dashboard.png)
 
+![Revenue trends dashboard in Power BI](powerbi/revenue_trends_dashboard.png)
+
  
 ## Key Findings
 ### Users: daily vs monthly
@@ -100,6 +102,26 @@ The same metrics are calculated as DAX measures in Power BI, so the Total reflec
 - **No advertising cost data:** GA4 does not include ad spend, so return on ad spend (ROAS = revenue / ad spend) cannot be calculated. Whether `cpc` is profitable can only be judged by comparing its $9,056 in revenue with the costs in Google Ads.
 - **Users overlap between channels:** the sum of users across channels (328,574) is higher than the total number of users in the dataset (270,154), so channel shares do not add up to 100%. `traffic_source` should describe the first acquisition channel per user, so the overlap is likely a result of the dataset's obfuscation.
 - **Obfuscated values:** `<Other>` (51,038 users) and `(data deleted)` (18,204 users) are artifacts of the anonymised sample dataset, not real channels, and are excluded from the table and findings.
+
+### Revenue trends (seasonality)
+
+**What was measured:** Daily and monthly revenue by traffic channel; data prepared in Power Query (date type conversion, filtering, renaming) and visualised in Power BI.
+
+| Month | Revenue ($) |
+|---|---|
+| Nov 2020 | 107,406 |
+| Dec 2020 | 123,612 |
+| Jan 2021 | 45,216 |
+
+**Key findings:**
+- November–December Peak: Revenue peaks with Black Friday at the end of November and holiday shopping through mid-December.
+- Post-Holiday Drop: Performance drops sharply after December 15–20 and stays low through January, with January revenue falling 2.7x below December levels.
+- Cohort Retention: consistent with the cohort analysis: the December cohort had lower Month 1 retention (2.5% vs 5.9%), which may be explained by one-time seasonal buyers.
+- Channel Dynamics: Direct traffic almost catches up to Referral in December, suggesting a seasonal shift in acquisition behavior.
+
+**Limitations:**
+- **Single-season data:** with only one season available, it is impossible to separate seasonal fluctuations from the overall trend.
+
   
 
 
