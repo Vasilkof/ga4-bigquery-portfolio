@@ -4,7 +4,7 @@ SQL analysis of GA4 e-commerce sample data in BigQuery, with dashboards in Data 
 
 ## Objective
 
-I wanted to determine the number of unique users in January 2021. I compared the number of unique users for each day (aggregated monthly data) with the total number of unique users for the entire month. I also wanted to count all sessions and build a purchase funnel to find out where people drop off. Then, I ran a cohort analysis to find out whether users come back in the months after their first visit. Finally, I compared customer acquisition channels by conversion rate and revenue per user to determine which was the most effective.
+I wanted to determine the number of unique users in January 2021. I compared the number of unique users for each day (aggregated monthly data) with the total number of unique users for the entire month. I also wanted to count all sessions and build a purchase funnel to find out where people drop off. Next, I wanted to check why the conversion rate between checkout and shipping info was 100%, since it's extremely unlikely that no users dropped off. Then, I ran a cohort analysis to find out whether users come back in the months after their first visit. After that, I compared customer acquisition channels by conversion rate and revenue per user to determine which was the most effective. Finally, I analyzed daily and monthly revenue to see when it peaked and when it dropped.
 
 ## Data
 
@@ -26,6 +26,7 @@ I used data from the public dataset `bigquery-public-data.ga4_obfuscated_sample_
 - `12_cohort_activity.sql` — joins activity with cohorts and calculates `month_number` (months since first visit).
 - `13_cohort_retention.sql` — number of active users per cohort and `month_number`. The query calculates cohort size and retention rate (as a proportion of the cohort size), in addition to user counts.
 - `14_channel_performance.sql` — calculates users, purchases, revenue, conversion rate, average order value, and revenue per user broken down by each traffic source medium (`traffic_source.medium`).
+- `15_january_checkout_timing.sql` — lists `begin_checkout` and `add_shipping_info` events chronologically per session to reveal tracking artifacts in the funnel. 
   
 ## Dashboard
 
@@ -53,7 +54,9 @@ The sum of unique users by day (106,565) exceeds the total number of unique user
 | 6 | add_payment_info | 1,560 | 72.3% |
 | 7 | purchase | 1,115 | 71.5% |
 
-The biggest drop-off happens on the product page: 80.4% of sessions (18,568 out of 23,105) end before users add something to the cart — only 19.6% (4,537 out of 23,105) move forward. This step is critical because product viewers already show interest in the product, so it is easier to convert them than random site visitors. Meanwhile, checkout works well: 51.6% (1,115 out of 2,159) convert from begin_checkout to purchase, showing that the main problem is before checkout. We should focus on the product page and check key elements: pricing, product photos, customer reviews, and shipping costs.
+**Note:** I checked event timestamps and found that `add_shipping_info` triggers almost simultaneously with `begin_checkout` (less than a millisecond apart, and sometimes even firing slightly earlier). This makes the 100% conversion rate a tracking artifact rather than real user behavior, so this step should be excluded when evaluating the conversion funnel.
+
+The biggest drop-off happens on the product page: 80.4% of sessions (18,568 out of 23,105) end before users add something to the cart — only 19.6% (4,537 out of 23,105) move forward. This step is critical because product viewers already show interest in the product, so it is easier to convert them than random site visitors. Meanwhile, checkout works well: 51.6% (1,115 out of 2,159) convert from `begin_checkout` to purchase, showing that the main problem is before checkout. We should focus on the product page and check key elements: pricing, product photos, customer reviews, and shipping costs.
 
 ### Cohort retention
 
@@ -114,10 +117,10 @@ The same metrics are calculated as DAX measures in Power BI, so the Total reflec
 | Jan 2021 | 45,216 |
 
 **Key findings:**
-- November–December Peak: Revenue peaks with Black Friday at the end of November and holiday shopping through mid-December.
-- Post-Holiday Drop: Performance drops sharply after December 15–20 and stays low through January, with January revenue falling 2.7x below December levels.
-- Cohort Retention: consistent with the cohort analysis: the December cohort had lower Month 1 retention (2.5% vs 5.9%), which may be explained by one-time seasonal buyers.
-- Channel Dynamics: Direct traffic almost catches up to Referral in December, suggesting a seasonal shift in acquisition behavior.
+- **November–December peak:** Revenue peaks with Black Friday at the end of November and holiday shopping through mid-December.
+- **Post-holiday drop:** Performance drops sharply after December 15–20 and stays low through January, with January revenue falling 2.7x below December levels.
+- **Cohort retention:** Consistent with the cohort analysis: the December cohort had lower Month 1 retention (2.5% vs 5.9%), which may be explained by one-time seasonal buyers.
+- **Channel dynamics:** Direct traffic almost catches up to Referral in December, suggesting a seasonal shift in acquisition behavior.
 
 **Limitations:**
 - **Single-season data:** with only one season available, it is impossible to separate seasonal fluctuations from the overall trend.
